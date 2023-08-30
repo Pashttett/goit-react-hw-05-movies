@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  MovieItem,
-  MovieList,
-  SearchContainer,
-  SearchForm,
-} from "./SearchMovies.styled";
-import { Link, useLocation } from "react-router-dom";
+import { SearchContainer, SearchForm } from "./SearchMovies.styled";
+import MovieList from "../MovieList/MovieList";
+import {  useLocation } from "react-router-dom";
 import { searchMovies } from "ServicesApi/ServicesApi";
 
 const SearchMovies = () => {
@@ -51,19 +47,7 @@ const SearchMovies = () => {
         />
         <button type="submit">Search</button>
       </SearchForm>
-      <MovieList>
-        {results.map((movie) => (
-          <Link to={`/movies/${movie.id}`} key={movie.id}>
-            <MovieItem>
-              <img
-                src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "https://taho.com.ua/image/cache/placeholder-335x200w.png.webp"}
-                alt={movie.title}
-              />
-              <h2>{movie.title}</h2>
-            </MovieItem>
-          </Link>
-        ))}
-      </MovieList>
+      <MovieList movies={results} />
     </SearchContainer>
   );
 };
