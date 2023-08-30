@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getFilmReviewsByID } from "components/ServicesApi/ServicesApi";
+import { getFilmReviewsByID } from "ServicesApi/ServicesApi";
 import {
   FilmReviewsContainer,
   FilmReviewItem,

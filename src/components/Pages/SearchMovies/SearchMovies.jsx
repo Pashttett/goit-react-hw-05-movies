@@ -1,23 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MovieItem,
   MovieList,
   SearchContainer,
   SearchForm,
 } from "./SearchMovies.styled";
-import { Link } from "react-router-dom";
-import { searchMovies } from "components/ServicesApi/ServicesApi";
+import { Link, useLocation } from "react-router-dom";
+import { searchMovies } from "ServicesApi/ServicesApi";
 
-const SearchMoviesPage = () => {
-  const [term, setTerm] = useState("");
-  const [results, setResults] = useState([]);
+const SearchMovies = () => {
+  const location = useLocation();
 
-  const PlaceholderImage = () => (
-    <img
-      src="https://taho.com.ua/image/cache/placeholder-335x200w.png.webp"
-      alt="No Poster Available"
-    />
-  );
+  const storedTerm = sessionStorage.getItem("searchTerm") || "";
+  const storedResults = JSON.parse(sessionStorage.getItem("searchResults")) || [];
+
+  const [term, setTerm] = useState(storedTerm);
+  const [results, setResults] = useState(storedResults);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -29,33 +27,17 @@ const SearchMoviesPage = () => {
 
     const searchResults = await searchMovies(term);
     setResults(searchResults);
+
+    sessionStorage.setItem("searchTerm", term);
+    sessionStorage.setItem("searchResults", JSON.stringify(searchResults));
   };
 
-  const renderMovies = () => {
-    if (results.length === 0) {
-      return <p>No movies found.</p>;
+  useEffect(() => {
+    if (location.state && location.state.fromMoviesPage) {
+      sessionStorage.removeItem("searchTerm");
+      sessionStorage.removeItem("searchResults");
     }
-
-    return (
-      <MovieList>
-        {results.map((movie) => (
-          <Link to={`/movies/${movie.id}`} key={movie.id}>
-            <MovieItem>
-              {movie.poster_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                />
-              ) : (
-                <PlaceholderImage />
-              )}
-              <h2>{movie.title}</h2>
-            </MovieItem>
-          </Link>
-        ))}
-      </MovieList>
-    );
-  };
+  }, [location.state]);
 
   return (
     <SearchContainer>
@@ -69,9 +51,21 @@ const SearchMoviesPage = () => {
         />
         <button type="submit">Search</button>
       </SearchForm>
-      {renderMovies()}
+      <MovieList>
+        {results.map((movie) => (
+          <Link to={`/movies/${movie.id}`} key={movie.id}>
+            <MovieItem>
+              <img
+                src={movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "https://taho.com.ua/image/cache/placeholder-335x200w.png.webp"}
+                alt={movie.title}
+              />
+              <h2>{movie.title}</h2>
+            </MovieItem>
+          </Link>
+        ))}
+      </MovieList>
     </SearchContainer>
   );
 };
 
-export default SearchMoviesPage;
+export default SearchMovies;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getFilmByID } from "components/ServicesApi/ServicesApi";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { getFilmByID } from "ServicesApi/ServicesApi";
 import Cast from "components/Cast/Cast";
 import Reviews from "components/FilmReviews.js/FilmReviews";
 import {
@@ -11,12 +11,14 @@ import {
   FilmImage,
   FilmDetails,
   ButtonRow,
-} from "./Movies.styled";
+  BackButton,
+} from "./Movie.styled";
 import Loader from "components/Loader/Loader";
 
-const MoviesPage = () => {
+const Movies = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [film, setFilm] = useState(null);
   const [error, setError] = useState(null);
@@ -40,9 +42,15 @@ const MoviesPage = () => {
     getFilm();
   }, [id]);
 
-if (error) {
-  return <p>Sorry, there was an error...</p>;
-}
+  useEffect(() => {
+    if (location.state && location.state.scrollY !== undefined) {
+      window.scrollTo(0, location.state.scrollY);
+    }
+  }, [location.state]);
+
+  if (error) {
+    return <p>Sorry, there was an error...</p>;
+  }
 
   if (!film) {
     return <Loader />;
@@ -50,6 +58,7 @@ if (error) {
 
   return (
     <FilmContainer>
+      <BackButton onClick={() => navigate(-1)}>Back</BackButton>
       <FilmTitle>{film.title}</FilmTitle>
       <FilmInfo>
         <FilmImage
@@ -57,20 +66,19 @@ if (error) {
           alt={film.title}
         />
         <FilmDetails>
-<p>
-  <strong>Release Date:</strong> {film.release_date}
-</p>
-<p>
-  <strong>Vote Average:</strong> {film.vote_average}
-</p>
-<p>
-  <strong>Genres:</strong>{" "}
-  {film.genres.map((genre) => genre.name).join(", ")}
-</p>
-<p>
-  <strong>Overview:</strong> {film.overview}
-</p>
-
+          <p>
+            <strong>Release Date:</strong> {film.release_date}
+          </p>
+          <p>
+            <strong>Vote Average:</strong> {film.vote_average}
+          </p>
+          <p>
+            <strong>Genres:</strong>{" "}
+            {film.genres.map((genre) => genre.name).join(", ")}
+          </p>
+          <p>
+            <strong>Overview:</strong> {film.overview}
+          </p>
         </FilmDetails>
       </FilmInfo>
       <ButtonRow>
@@ -86,18 +94,18 @@ if (error) {
         <StyledButtonLink
           onClick={() => {
             setShowReviews(true);
-            setShowCast(false); 
+            setShowCast(false);
             navigate(`/movies/${id}/reviews`);
           }}
         >
           Reviews
         </StyledButtonLink>
       </ButtonRow>
-      
+
       {showCast && <Cast filmId={id} />}
       {showReviews && <Reviews filmId={id} />}
     </FilmContainer>
   );
 };
 
-export default MoviesPage;
+export default Movies;

@@ -5,10 +5,13 @@ export const FilmContainer = styled.div`
   margin: auto;
   max-width: 1200px;
   padding: 32px;
-  text-align: center;
   background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column; /* Встановлюємо напрямок колонки */
+  align-items: flex-start; /* Вирівнюємо вміст зліва */
 `;
 
 export const FilmTitle = styled.h1`
@@ -56,12 +59,11 @@ export const FilmDetails = styled.div`
 
 export const ButtonLink = styled(Link)`
   padding: 12px 24px;
-  background-color: #f39c12;
+  background-color: #063d1f;
   color: #fff;
   border: none;
   border-radius: 6px;
   text-decoration: none;
-  cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
@@ -152,5 +154,21 @@ export const SearchMoviesText = styled.h2`
 
   &:hover {
     color: darkgreen;
+  }
+`;
+
+export const BackButton = styled.button`
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  border: none;
+  border-left: 4px solid transparent;
+  padding-left: 12px;
+  transition: color 0.3s ease-in-out, border-left-color 0.3s ease-in-out;
+  
+  &:hover {
+    color: darkgreen;
+    border-left-color: darkgreen;
   }
 `;

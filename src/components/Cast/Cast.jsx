@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { getFilmCastByID } from "components/ServicesApi/ServicesApi";
+import { getFilmCastByID } from "ServicesApi/ServicesApi";
 import Loader from "components/Loader/Loader";
 import { CastContainer, CastList, CastItem, CastImage, CastName } from "./CastStyle";
 
